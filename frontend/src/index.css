@@ -1,0 +1,42 @@
+@import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap");
+
+* {
+  font-family: "Quicksand", sans-serif;
+}
+
+.scroll-bar::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+.scroll-bar::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle */
+.scroll-bar::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+.chat-item:hover .more-icon {
+  opacity: 1;
+}
+
+.nav-item {
+  color: #2d3748;
+}
+
+.active {
+  color: #2f855a !important;
+}
+
+.nav-item {
+  transition: all 200ms ease-in;
+}
+.nav-item:hover {
+  color: #2f855a;
+}
+
+.nav-item * {
+  color: inherit;
+}
