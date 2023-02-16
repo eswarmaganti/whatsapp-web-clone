@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 export const chatSlice = createSlice({
   name: "chat",
-  initialState: { selectedChat: {} },
+  initialState: { selectedChat: null },
   reducers: {
     setSelectedChat: (state, data) => {
       state.selectedChat = { ...data.payload };
