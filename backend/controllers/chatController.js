@@ -28,7 +28,7 @@ export const createOrAccessChat = asyncHandler(async (req, res) => {
   // populating the sender details of lastMessage
   isChat = await User.populate(isChat, {
     path: "latestMessage.sender",
-    select: "name profilePicture email",
+    select: "name image email",
   });
 
   if (isChat.length > 0) {
@@ -68,7 +68,7 @@ export const fetchChats = asyncHandler(async (req, res) => {
 
     const finalChats = await User.populate(chats, {
       path: "latestMessage.sender",
-      select: "name email profilePicture",
+      select: "name email image",
     });
 
     res.status(200).send(finalChats);

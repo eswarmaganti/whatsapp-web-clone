@@ -18,15 +18,19 @@ const userSchema = Schema(
       required: true,
       trim: true,
     },
-    profilePicture: {
+    image: {
       type: String,
-      required: true,
-      default: "https://cdn-icons-png.flaticon.com/512/4140/4140048.png",
+      required: false,
     },
-    isAdmin: {
-      type: Boolean,
-      required: true,
-      default: false,
+    gender: {
+      type: String,
+      required: false,
+      enum: ["male", "female", "trans"],
+    },
+    about: {
+      type: String,
+      required: false,
+      max: 200,
     },
   },
   { timestamp: true }

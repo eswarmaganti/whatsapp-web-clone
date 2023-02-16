@@ -21,8 +21,11 @@ import {
 import * as Yup from "yup";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 
 import { useLoginUserMutation } from "../app/services/authApi";
+import { setUserInfo } from "../app/slice/userSlice";
 
 const LoginSchema = Yup.object({
   email: Yup.string()
@@ -37,6 +40,8 @@ const LoginSchema = Yup.object({
 });
 
 const LoginPage = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const toast = useToast();
   const {
     register,
@@ -44,11 +49,11 @@ const LoginPage = () => {
     formState: { errors },
   } = useForm({ resolver: yupResolver(LoginSchema) });
 
-  const [loginUser, { data, error, isLoading, isError }] =
+  const [loginUser, { data, error, isLoading, isError, isSuccess }] =
     useLoginUserMutation();
 
   const userLoginHanlder = async (data) => {
-    console.log(data);
+    // console.log(data);
     await loginUser({ ...data });
   };
 
@@ -63,6 +68,15 @@ const LoginPage = () => {
         position: "top-right",
       });
   }, [isError]);
+
+  useEffect(() => {
+    if (isSuccess) {
+      dispatch(setUserInfo(data));
+      navigate("/app");
+    }
+  }, [isSuccess]);
+
+  // console.log(data);
 
   return (
     <>

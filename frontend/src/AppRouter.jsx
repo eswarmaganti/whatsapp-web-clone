@@ -4,6 +4,7 @@ import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
 import AppPage from "./pages/AppPage";
 import AuthLayout from "./components/layout/AuthLayout";
+import ProtectedRoute from "./hoc/ProtectedRoute";
 const AppRouter = () => {
   return (
     <BrowserRouter>
@@ -12,7 +13,14 @@ const AppRouter = () => {
           <Route index element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
         </Route>
-        <Route path="/app" element={<AppPage />} />
+        <Route
+          path="/app"
+          element={
+            <ProtectedRoute>
+              <AppPage />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </BrowserRouter>
   );

@@ -1,18 +1,18 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  user: localStorage.getItem("chatAppUserInfo")
-    ? JSON.parse(localStorage.getItem("chatAppUserInfo")).user
+  user: localStorage.getItem("whatsAppUserInfo")
+    ? JSON.parse(localStorage.getItem("whatsAppUserInfo")).user
     : {},
 };
 
 export const userSlice = createSlice({
-  name: "chatAppUserInfo",
+  name: "whatsAppUserInfo",
   initialState,
   reducers: {
     setUserInfo: (state, data) => {
       localStorage.setItem(
-        "chatAppUserInfo",
+        "whatsAppUserInfo",
         JSON.stringify({ user: data.payload })
       );
       state.user = { ...data.payload };

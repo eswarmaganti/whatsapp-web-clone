@@ -8,7 +8,7 @@ import {} from "bcrypt";
 //@description to register new users
 
 export const registerUser = asyncHandler(async (req, res, next) => {
-  const { name, email, password, profilePicture } = req.body;
+  const { name, email, password } = req.body;
 
   if (!name || !email || !password) {
     res.status(400);
@@ -22,7 +22,7 @@ export const registerUser = asyncHandler(async (req, res, next) => {
     throw new Error(`${email} is already taken`);
   }
 
-  const user = await User.create({ name, email, password, profilePicture });
+  const user = await User.create({ name, email, password });
 
   if (!user) {
     res.status(400);
@@ -32,7 +32,6 @@ export const registerUser = asyncHandler(async (req, res, next) => {
     _id: user._id,
     name: user.name,
     email: user.email,
-    profilePicture: user.profilePicture,
     token: generateToken(user._id),
   });
 });
@@ -59,7 +58,9 @@ export const loginUser = asyncHandler(async (req, res, next) => {
     name: user.name,
     email: user.email,
     isAdmin: user.isAdmin,
-    profilePicture: user.profilePicture,
+    image: user.image,
+    gender: user.gender,
+    about: user.about,
     token: generateToken(user._id),
   });
 });

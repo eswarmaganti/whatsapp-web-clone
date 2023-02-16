@@ -12,7 +12,7 @@ import {
   FormErrorMessage,
   useToast,
 } from "@chakra-ui/react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   MdEmail as EmailIcon,
   MdLock as LockIcon,
@@ -36,12 +36,12 @@ const SignupSchema = Yup.object({
     .min(6, "Email Address must be minimum 6 characters")
     .max(40, "Email Address must be maximum 40 characters")
     .required("Email Address is required"),
-  gender: Yup.string()
-    .oneOf(
-      ["male", "female", "trans"],
-      "Gender must be one of male, female, trans"
-    )
-    .required("Gender is required"),
+  // gender: Yup.string()
+  //   .oneOf(
+  //     ["male", "female", "trans"],
+  //     "Gender must be one of male, female, trans"
+  //   )
+  //   .required("Gender is required"),
   password: Yup.string()
     .min(6, "Password must be minimum 6 characters")
     .max(30, "Password must be maximum 40 characters")
@@ -52,6 +52,7 @@ const SignupSchema = Yup.object({
 });
 
 const SignupPage = () => {
+  const navigate = useNavigate();
   const toast = useToast();
   const {
     register,
@@ -64,8 +65,9 @@ const SignupPage = () => {
   const [registerUser, { data, error, isLoading, isError, isSuccess }] =
     useRegisterUserMutation();
 
-  const userRegisterHandler = (data) => {
+  const userRegisterHandler = async (data) => {
     console.log(data);
+    await registerUser({ ...data });
   };
 
   useEffect(() => {
@@ -80,6 +82,23 @@ const SignupPage = () => {
       });
     }
   }, [isError]);
+
+  useEffect(() => {
+    if (isSuccess)
+      toast({
+        title: "Signup Success",
+        description:
+          "Account Creation Successful, login using your credentials",
+        status: "success",
+        duration: 6000,
+        isClosable: true,
+        position: "top-right",
+      });
+
+    setTimeout(() => {
+      navigate("/");
+    }, 4000);
+  }, [isSuccess]);
 
   return (
     <>

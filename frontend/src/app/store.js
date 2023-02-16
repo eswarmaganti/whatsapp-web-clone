@@ -10,7 +10,7 @@ const store = configureStore({
     [authApi.reducerPath]: authApi.reducer,
     [chatApi.reducerPath]: chatApi.reducer,
     [messageApi.reducerPath]: messageApi.reducer,
-    chatAppUserInfo: userReducer,
+    whatsAppUserInfo: userReducer,
     chat: chatReducer,
   },
   middleware: (getDefaultMiddleware) =>
