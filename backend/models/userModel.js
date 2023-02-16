@@ -31,6 +31,7 @@ const userSchema = Schema(
       type: String,
       required: false,
       max: 200,
+      default: "Hey there! i am using whatsapp",
     },
   },
   { timestamp: true }

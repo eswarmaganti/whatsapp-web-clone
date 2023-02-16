@@ -84,7 +84,7 @@ const SignupPage = () => {
   }, [isError]);
 
   useEffect(() => {
-    if (isSuccess)
+    if (isSuccess) {
       toast({
         title: "Signup Success",
         description:
@@ -95,9 +95,10 @@ const SignupPage = () => {
         position: "top-right",
       });
 
-    setTimeout(() => {
-      navigate("/");
-    }, 4000);
+      setTimeout(() => {
+        navigate("/");
+      }, 4000);
+    }
   }, [isSuccess]);
 
   return (
