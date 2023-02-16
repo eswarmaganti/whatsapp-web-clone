@@ -14,13 +14,14 @@ import {
 import {
   MdGroups,
   MdDonutLarge,
-  MdChat,
+  MdChat as ChatIcon,
   MdMoreVert as MenuIcon,
 } from "react-icons/md";
 
 import CustomTooltip from "./CustomTooltip";
 import LogoutModel from "./LogoutModel";
 import CreateChatGroup from "./CreateChatGroup";
+import CreateNewChat from "./CreateNewChat";
 
 const menuData = [
   {
@@ -31,10 +32,10 @@ const menuData = [
     icon: <MdDonutLarge size={24} />,
     label: "Status",
   },
-  {
-    icon: <MdChat size={24} />,
-    label: "New Chat",
-  },
+  // {
+  //   icon: <MdChat size={24} />,
+  //   label: "New Chat",
+  // },
   // {
   //   icon: <MdMoreVert size={24} />,
   //   label: "Menu",
@@ -43,6 +44,7 @@ const menuData = [
 
 const Header = () => {
   const createGroupBtnRef = useRef();
+  const createChatBtnRef = useRef();
   const {
     onClose: onLogoutModalClose,
     isOpen: isLogoutModalOpen,
@@ -54,7 +56,11 @@ const Header = () => {
     isOpen: isCreateGroupOpen,
     onOpen: onCreateGroupOpen,
   } = useDisclosure();
-  // const { onClose, isOpen, onOpen } = useDisclosure();
+  const {
+    onClose: onCreateChatClose,
+    isOpen: isCreateChatOpen,
+    onOpen: onCreateChatOpen,
+  } = useDisclosure();
 
   return (
     <Flex
@@ -74,6 +80,11 @@ const Header = () => {
         {menuData.map(({ icon, label }, ind) => (
           <CustomTooltip icon={icon} label={label} key={ind} />
         ))}
+        <CustomTooltip
+          icon={<ChatIcon size={24} />}
+          label="New Chat"
+          onClick={onCreateChatOpen}
+        />
         <Menu>
           <MenuButton as={Box}>
             <IconButton>
@@ -97,6 +108,11 @@ const Header = () => {
         onClose={onCreateGroupClose}
         isOpen={isCreateGroupOpen}
         btnRef={createGroupBtnRef}
+      />
+      <CreateNewChat
+        onClose={onCreateChatClose}
+        isOpen={isCreateChatOpen}
+        btnRef={createChatBtnRef}
       />
     </Flex>
   );

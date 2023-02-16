@@ -67,11 +67,6 @@ const CreateChatGroup = ({ isOpen, onClose, btnRef }) => {
     trigger({ searchText: e.target.value.trim(), token: user.token });
   };
 
-  // triggering the search results api call when component mounted
-  useEffect(() => {
-    trigger({ searchText: "", token: user.token });
-  }, []);
-
   const handleAddGroupParticipant = (user) => {
     const participantNotExists = (participant) => participant._id !== user._id;
 
@@ -106,6 +101,11 @@ const CreateChatGroup = ({ isOpen, onClose, btnRef }) => {
       token: user.token,
     });
   };
+
+  // triggering the search results api call when component mounted
+  useEffect(() => {
+    trigger({ searchText: "", token: user.token });
+  }, []);
 
   useEffect(() => {
     if (isCreateGroupChatError)
