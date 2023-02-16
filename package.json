@@ -1,0 +1,25 @@
+{
+  "name": "whatsapp-web-clone",
+  "version": "1.0.0",
+  "description": "whatsapp web clone version",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node backend/server",
+    "dev": "nodemon backend/server"
+  },
+  "author": "Eswar Maganti",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.1.0",
+    "concurrently": "^7.6.0",
+    "coolors": "^0.0.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "express-async-handler": "^1.2.0",
+    "jsonwebtoken": "^9.0.0",
+    "mongoose": "^6.9.1",
+    "socket.io": "^4.6.0"
+  }
+}
