@@ -26,6 +26,10 @@ const ChatItem = ({ chat, onClick, selectedChat, ...rest }) => {
 
   const chatName = chat.isGroupChat ? chat.chatName : senderData.name;
 
+  const latestMessage =
+    chat?.latestMessage?.content.length > 35
+      ? chat?.latestMessage?.content.slice(0, 35) + "..."
+      : chat?.latestMessage?.content;
   return (
     <Flex direction="column" onClick={() => onClick(chat)}>
       <HStack
@@ -52,7 +56,7 @@ const ChatItem = ({ chat, onClick, selectedChat, ...rest }) => {
                 color={chat?.latestMessage?.seen ? "#0BC5EA" : "#718096"}
               />
               <Text fontSize="xs" color="gray.600">
-                {chat?.latestMessage?.content}
+                {latestMessage}
               </Text>
             </HStack>
           </Box>
