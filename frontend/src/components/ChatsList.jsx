@@ -17,8 +17,15 @@ import { useSelector, useDispatch } from "react-redux";
 
 import { setSelectedChat } from "../app/slice/chatSlice";
 import { useFetchChatsQuery } from "../app/services/chatApi";
+import dayjs from "dayjs";
+import { getCurrentSender } from "../util";
 
 const ChatItem = ({ chat, onClick, selectedChat, ...rest }) => {
+  const { user } = useSelector((state) => state.whatsAppUserInfo);
+  const senderData = getCurrentSender(chat.users, user);
+
+  const chatName = chat.isGroupChat ? chat.chatName : senderData.name;
+
   return (
     <Flex direction="column" onClick={() => onClick(chat)}>
       <HStack
@@ -33,18 +40,18 @@ const ChatItem = ({ chat, onClick, selectedChat, ...rest }) => {
         className="chat-item"
       >
         {/* ------ Avatar to display user profile image ----- */}
-        <Avatar name={chat.chatName} src={""} mr="4" />
+        <Avatar name={chatName} src={""} mr="4" />
 
         {/* ------- Chat Content Section ----- */}
         <Flex flex="1" justifyContent="space-between" align="baseline">
           {/* ------- Chat Name and Message Section */}
           <Box>
-            <Text fontWeight="500">{chat.chatName}</Text>
+            <Text fontWeight="500">{chatName}</Text>
             <HStack>
               <MdDoneAll
                 color={chat?.latestMessage?.seen ? "#0BC5EA" : "#718096"}
               />
-              <Text fontSize="sm" color="gray.600">
+              <Text fontSize="xs" color="gray.600">
                 {chat?.latestMessage?.content}
               </Text>
             </HStack>
@@ -53,7 +60,7 @@ const ChatItem = ({ chat, onClick, selectedChat, ...rest }) => {
           {/* ------- Date & More Action Section ------ */}
           <VStack alignItems="flex-end">
             <Text fontSize="xs" color="gray.500">
-              {chat.date}
+              {dayjs(chat?.latestMessage?.createdAt).format("DD/MM HH:mm")}
             </Text>
             <Box
               opacity="0"

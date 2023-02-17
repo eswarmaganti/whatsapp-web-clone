@@ -1,17 +1,101 @@
-import React from "react";
-import { HStack, Flex, IconButton, Box, Input } from "@chakra-ui/react";
+import React, { useState, useEffect } from "react";
+import {
+  HStack,
+  Flex,
+  IconButton,
+  Box,
+  Input,
+  useToast,
+  Spinner,
+  Text,
+  Tag,
+  Stack,
+} from "@chakra-ui/react";
 import { useSelector } from "react-redux";
 import {
   MdSentimentVerySatisfied as EmojiIcon,
   MdOutlineAttachFile as AttachmentIcon,
   MdMic as MicrophoneIcon,
 } from "react-icons/md";
+import dayjs from "dayjs";
 
+import {
+  useSendNewMessageMutation,
+  useFetchMessagesQuery,
+} from "../app/services/messageApi";
 import ChatBoxBanner from "./layout/ChatBoxBanner";
 import ChatBoxHeader from "./ChatBoxHeader";
 
+import { getCurrentSender, isUserSender } from "../util";
+
 const UserChatBox = () => {
+  const toast = useToast();
+  // state hook to hold message
+  const [message, setMessage] = useState("");
+  const [messagesList, setMessagesList] = useState([]);
+
   const { selectedChat } = useSelector((state) => state.chat);
+  const { user } = useSelector((state) => state.whatsAppUserInfo);
+
+  const {
+    data: fetchMessagesData,
+    isError: isFetchMessagesError,
+    isLoading: isFetchMessagesLoading,
+    error: fetchMessagesError,
+    isFetching: isMessagesFetching,
+  } = useFetchMessagesQuery({ chatId: selectedChat?._id, token: user.token });
+
+  const [
+    sendNewMessage,
+    {
+      data: newMessageData,
+      isError: isSendNewMessageError,
+      isLoading: isSendNewMessageLoading,
+      error: sendNewMessageError,
+    },
+  ] = useSendNewMessageMutation();
+
+  const handleMessageChange = (e) => {
+    setMessage(e.target.value);
+  };
+  const handleSendNewMessage = async (e) => {
+    if (e.key.toLowerCase() !== "enter") return;
+    if (!message)
+      return toast({
+        title: "Invalid Message",
+        description: "Please type a message to send",
+        position: "top-right",
+        isClosable: true,
+        duration: 4000,
+        status: "warning",
+      });
+
+    setMessage("");
+    // saending a new message
+    await sendNewMessage({
+      content: message,
+      chatId: selectedChat._id,
+      token: user.token,
+    });
+  };
+
+  // hook for setup the state with recent messages
+  useEffect(() => {
+    if (fetchMessagesData) setMessagesList([...fetchMessagesData]);
+  }, [JSON.stringify(fetchMessagesData)]);
+
+  // hook for handling sending new messages error
+  useEffect(() => {
+    if (isSendNewMessageError)
+      toast({
+        title: "Error",
+        description: sendNewMessageError?.data?.message,
+        position: "top-right",
+        isClosable: true,
+        duration: 4000,
+        status: "error",
+      });
+  }, [isSendNewMessageError]);
 
   if (!selectedChat) return <ChatBoxBanner />;
 
@@ -20,7 +104,30 @@ const UserChatBox = () => {
       {/* --------- Chat Box Header Section --------- */}
       <ChatBoxHeader />
       {/* ---------- Messages Section ----------- */}
-      <Box flex="1" overflowY="auto"></Box>
+      <Stack direction="column" flex="1" overflowY="auto" px="10" py="3">
+        {isFetchMessagesLoading && (
+          <Flex height="100%" alignItems="center" justifyContent="center">
+            <Spinner size="lg" color="green.600" />
+          </Flex>
+        )}
+        //TODO: need to work on alignment of messages based on sender
+        {messagesList.map((msg) => (
+          <Flex
+            key={msg._id}
+            direction="column"
+            alignSelf={
+              isUserSender(msg.sender, user) ? "flex-start" : "flex-end"
+            }
+          >
+            <Tag borderRadius="full" size="lg" colorScheme="green" px="4">
+              {msg.content}
+            </Tag>
+            <Text fontSize="xs" color="gray.500" align="right">
+              {dayjs(msg.createdAt).format("DD/MM HH:mm")}
+            </Text>
+          </Flex>
+        ))}
+      </Stack>
       {/* --------- New Message Input Section ----------- */}
       <HStack spacing="2" bgColor="gray.50" px="4" py="2">
         <IconButton isRound>
@@ -35,9 +142,13 @@ const UserChatBox = () => {
             color: "gray.800",
             fontWeight: "500",
           }}
+          type="text"
           bgColor="gray.200"
           placeholder="Type a message..."
           variant="filled"
+          onKeyDown={handleSendNewMessage}
+          onChange={handleMessageChange}
+          value={message}
         />
 
         <IconButton>
