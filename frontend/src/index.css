@@ -40,3 +40,16 @@
 .nav-item * {
   color: inherit;
 }
+
+.profile-avatar {
+  position: relative;
+}
+.profile-avatar::after {
+  position: absolute;
+  border-radius: 100%;
+  content: "";
+  display: block;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(183, 193, 204, 0.815);
+}

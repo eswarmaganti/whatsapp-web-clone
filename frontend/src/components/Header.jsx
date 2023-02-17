@@ -17,11 +17,13 @@ import {
   MdChat as ChatIcon,
   MdMoreVert as MenuIcon,
 } from "react-icons/md";
+import { useSelector } from "react-redux";
 
 import CustomTooltip from "./CustomTooltip";
 import LogoutModel from "./LogoutModel";
 import CreateChatGroup from "./CreateChatGroup";
 import CreateNewChat from "./CreateNewChat";
+import UserProfileDrawer from "./UserProfileDrawer";
 
 const menuData = [
   {
@@ -32,19 +34,14 @@ const menuData = [
     icon: <MdDonutLarge size={24} />,
     label: "Status",
   },
-  // {
-  //   icon: <MdChat size={24} />,
-  //   label: "New Chat",
-  // },
-  // {
-  //   icon: <MdMoreVert size={24} />,
-  //   label: "Menu",
-  // },
 ];
 
 const Header = () => {
+  const { user } = useSelector((state) => state.whatsAppUserInfo);
+
   const createGroupBtnRef = useRef();
   const createChatBtnRef = useRef();
+  const profileBtnRef = useRef();
   const {
     onClose: onLogoutModalClose,
     isOpen: isLogoutModalOpen,
@@ -61,6 +58,11 @@ const Header = () => {
     isOpen: isCreateChatOpen,
     onOpen: onCreateChatOpen,
   } = useDisclosure();
+  const {
+    onClose: onProfileClose,
+    isOpen: isProfileOpen,
+    onOpen: onProfileOpen,
+  } = useDisclosure();
 
   return (
     <Flex
@@ -71,11 +73,14 @@ const Header = () => {
       px="4"
       borderRight="1px solid #dfdede"
     >
-      <Avatar
-        size="md"
-        name="Alex"
-        src="https://images.pexels.com/photos/846741/pexels-photo-846741.jpeg"
-      />
+      <IconButton isRound onClick={onProfileOpen}>
+        <Avatar
+          size="md"
+          name={user?.name}
+          src={user?.image}
+          ref={profileBtnRef}
+        />
+      </IconButton>
       <HStack spacing={3}>
         {menuData.map(({ icon, label }, ind) => (
           <CustomTooltip icon={icon} label={label} key={ind} />
@@ -113,6 +118,11 @@ const Header = () => {
         onClose={onCreateChatClose}
         isOpen={isCreateChatOpen}
         btnRef={createChatBtnRef}
+      />
+      <UserProfileDrawer
+        onClose={onProfileClose}
+        isOpen={isProfileOpen}
+        btnRef={profileBtnRef}
       />
     </Flex>
   );
