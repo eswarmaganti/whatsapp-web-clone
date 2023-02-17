@@ -47,9 +47,9 @@ export const fetchAllMessages = asyncHandler(async (req, res) => {
       .populate("sender", "name image email")
       .populate("chat");
 
-    res.status(200).json(messages);
+    return res.status(200).json(messages);
   } catch (error) {
-    res.send(500);
+    res.status(500);
     throw new Error(error.message);
   }
 });
