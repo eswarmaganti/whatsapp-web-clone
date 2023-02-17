@@ -104,7 +104,14 @@ export const updateUserProfile = asyncHandler(async (req, res, next) => {
     userData.password = password ? password : userData.password;
     await userData.save();
 
-    res.status(200).json(userData);
+    res.status(200).json({
+      name: userData.name,
+      email: userData.email,
+      image: userData.image,
+      about: userData.about,
+      _id: userData._id,
+      token: generateToken(userData._id),
+    });
   } catch (error) {
     res.status(500);
     throw new Error(error.message);
