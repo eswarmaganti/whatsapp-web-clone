@@ -36,9 +36,9 @@ export const registerUser = asyncHandler(async (req, res, next) => {
   });
 });
 
-//@route /api/user/register
+//@route /api/user/login
 //@access public
-//@description to register new users
+//@description to login new users
 
 export const loginUser = asyncHandler(async (req, res, next) => {
   const { email, password } = req.body;
@@ -84,4 +84,29 @@ export const getAllUsers = asyncHandler(async (req, res, next) => {
 
   const users = await User.find(keyword).find({ _id: { $ne: req.user._id } });
   res.status(200).send(users);
+});
+
+//@route /api/user/
+//@access private
+//@description to update user profile
+export const updateUserProfile = asyncHandler(async (req, res, next) => {
+  try {
+    const { name, about, image, password } = req.body;
+    const userData = await User.findById(req.user._id);
+    if (!userData) {
+      res.status(404);
+      throw new Error("User is not available");
+    }
+
+    userData.name = name ? name : userData.name;
+    userData.about = about ? about : userData.about;
+    userData.image = image ? image : userData.image;
+    userData.password = password ? password : userData.password;
+    await userData.save();
+
+    res.status(200).json(userData);
+  } catch (error) {
+    res.status(500);
+    throw new Error(error.message);
+  }
 });
