@@ -10,10 +10,10 @@ const AuthLayout = () => {
     <Flex direction="column" h="100vh">
       <Navbar />
       <Flex px="20" flex="1" bg="gray.50" height="calc(100% - 65px)">
-        <Flex direction="column" justifyContent="center" w="50%" px="14">
+        <Flex direction="column" justifyContent="center" w="50%" px="20">
           <Outlet />
         </Flex>
-        <Box w="50%">
+        <Box w="50%" p="4">
           <Image
             src={loginBanner}
             objectFit="cover"

@@ -60,7 +60,7 @@ const LoginPage = () => {
   useEffect(() => {
     if (isError)
       toast({
-        title: "Error",
+        title: "Login Failed!",
         description: error?.data?.message,
         status: "error",
         duration: 6000,
@@ -75,8 +75,6 @@ const LoginPage = () => {
       navigate("/app");
     }
   }, [isSuccess]);
-
-  // console.log(data);
 
   return (
     <>
@@ -103,7 +101,7 @@ const LoginPage = () => {
             />
             <Input
               _placeholder={{
-                fontSize: 14,
+                fontSize: 16,
                 fontWeight: "500",
               }}
               {...register("email")}
@@ -132,7 +130,7 @@ const LoginPage = () => {
             />
             <Input
               _placeholder={{
-                fontSize: 14,
+                fontSize: 16,
                 fontWeight: "500",
               }}
               {...register("password")}

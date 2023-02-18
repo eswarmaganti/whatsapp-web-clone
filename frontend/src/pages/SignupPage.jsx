@@ -103,10 +103,7 @@ const SignupPage = () => {
 
   return (
     <>
-      <Heading>Signup.</Heading>
-      <Text color="gray.600" mt="2" mb="6">
-        Create a new account to get started.
-      </Text>
+      <Heading mb="4">Signup.</Heading>
 
       <form
         noValidate
@@ -127,7 +124,7 @@ const SignupPage = () => {
             />
             <Input
               _placeholder={{
-                fontSize: 14,
+                fontSize: 16,
                 fontWeight: "500",
               }}
               {...register("name")}
@@ -157,7 +154,7 @@ const SignupPage = () => {
             />
             <Input
               _placeholder={{
-                fontSize: 14,
+                fontSize: 16,
                 fontWeight: "500",
               }}
               {...register("email")}
@@ -188,7 +185,7 @@ const SignupPage = () => {
             />
             <Input
               _placeholder={{
-                fontSize: 14,
+                fontSize: 16,
                 fontWeight: "500",
               }}
               {...register("password")}
@@ -218,7 +215,7 @@ const SignupPage = () => {
             />
             <Input
               _placeholder={{
-                fontSize: 14,
+                fontSize: 16,
                 fontWeight: "500",
               }}
               {...register("confirmPassword")}

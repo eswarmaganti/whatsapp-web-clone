@@ -25,6 +25,7 @@ import {
   MdCameraAlt as CameraIcon,
   MdSave as SaveIcon,
   MdEdit as EditIcon,
+  MdLock as LockIcon,
 } from "react-icons/md";
 import { useSelector, useDispatch } from "react-redux";
 import * as Yup from "yup";
@@ -62,18 +63,20 @@ const UserProfileDrawer = ({ isOpen, onClose, btnRef, ...rest }) => {
     useUpdateUserProfileMutation();
 
   const handleUpdateUserProfile = (data) => {
-    const { name, about, image } = data;
+    const { name, about, image, password } = data;
     // function to upload the image to cloudinary
     uploadProfilePicture(image, async (imageUrl) => {
       await updateUserProfile({
         name,
         about,
         image: imageUrl,
+        password,
         token: user.token,
       });
     });
   };
 
+  // method to upload user profile picture
   const uploadProfilePicture = async (image, callBack) => {
     // if image is not selected just run the callBack
 
@@ -174,9 +177,9 @@ const UserProfileDrawer = ({ isOpen, onClose, btnRef, ...rest }) => {
           <DrawerHeader>Profile</DrawerHeader>
         </Box>
 
-        <DrawerBody mt="4">
+        <DrawerBody mt="4" overflowY="auto">
           <Center>
-            <Avatar size="2xl" src={user?.image} alignSelf="center" mb="4" />
+            <Avatar size="2xl" src={user?.image} alignSelf="center" mb="2" />
           </Center>
           <form
             autoComplete="off"
@@ -184,22 +187,26 @@ const UserProfileDrawer = ({ isOpen, onClose, btnRef, ...rest }) => {
           >
             <FormControl mb="2">
               <FormLabel>Your Name</FormLabel>
-              <InputGroup size="lg">
+              <InputGroup>
                 <InputLeftElement
                   children={<UserIcon size="24" color="#2D3748" />}
                 />
                 <Input
                   name="name"
                   placeholder="your name..."
-                  size="lg"
+                  fontSize="md"
                   variant="filled"
                   {...register("name")}
                   disabled={editName}
                 />
                 <InputRightElement
                   children={
-                    <IconButton isRound onClick={() => setEditName(!editName)}>
-                      <EditIcon size="24" />
+                    <IconButton
+                      size="sm"
+                      isRound
+                      onClick={() => setEditName(!editName)}
+                    >
+                      <EditIcon color="#4A5568" size="20" />
                     </IconButton>
                   }
                 />
@@ -208,14 +215,14 @@ const UserProfileDrawer = ({ isOpen, onClose, btnRef, ...rest }) => {
 
             <FormControl mb="2">
               <FormLabel>About</FormLabel>
-              <InputGroup size="lg">
+              <InputGroup>
                 <InputLeftElement
                   children={<InfoIcon size="24" color="#2D3748" />}
                 />
                 <Input
                   name="about"
                   placeholder="about yourself..."
-                  size="lg"
+                  fontSize="md"
                   variant="filled"
                   {...register("about")}
                   disabled={editAbout}
@@ -225,25 +232,42 @@ const UserProfileDrawer = ({ isOpen, onClose, btnRef, ...rest }) => {
                     <IconButton
                       isRound
                       onClick={() => setEditAbout(!editAbout)}
+                      size="sm"
                     >
-                      <EditIcon size="24" />
+                      <EditIcon color="#4A5568" size="20" />
                     </IconButton>
                   }
                 />
               </InputGroup>
             </FormControl>
-            <FormControl mb="4">
+            <FormControl mb="2">
               <FormLabel>Profile Picture</FormLabel>
-              <InputGroup size="lg">
+              <InputGroup>
                 <InputLeftElement
                   children={<CameraIcon size="24" color="#2D3748" />}
                 />
                 <Input
                   {...register("image")}
                   type="file"
-                  size="lg"
-                  pt="2"
+                  pt="1.5"
                   variant="filled"
+                  fontSize="md"
+                />
+              </InputGroup>
+            </FormControl>
+            <FormControl mb="4">
+              <FormLabel>New Password</FormLabel>
+              <InputGroup>
+                <InputLeftElement
+                  children={<LockIcon size="24" color="#2D3748" />}
+                />
+                <Input
+                  type="password"
+                  name="password"
+                  placeholder="type your password"
+                  fontSize="md"
+                  variant="filled"
+                  {...register("password")}
                 />
               </InputGroup>
             </FormControl>

@@ -3,7 +3,6 @@ import {
   HStack,
   Flex,
   IconButton,
-  Box,
   Input,
   useToast,
   Spinner,
@@ -18,32 +17,35 @@ import {
   MdMic as MicrophoneIcon,
 } from "react-icons/md";
 import dayjs from "dayjs";
+import io from "socket.io-client";
 
 import {
   useSendNewMessageMutation,
   useFetchMessagesQuery,
 } from "../app/services/messageApi";
-import ChatBoxBanner from "./layout/ChatBoxBanner";
 import ChatBoxHeader from "./ChatBoxHeader";
 
 import { getCurrentSender, isUserSender } from "../util";
+
+const ENDPOINT = "http://localhost:5000";
+var socket;
 
 const UserChatBox = () => {
   const toast = useToast();
   // state hook to hold message
   const [message, setMessage] = useState("");
-  const [messagesList, setMessagesList] = useState([]);
+  // const [messagesList, setMessagesList] = useState([]);
 
   const { selectedChat } = useSelector((state) => state.chat);
   const { user } = useSelector((state) => state.whatsAppUserInfo);
 
   const {
-    data: fetchMessagesData,
+    data: messagesList,
     isError: isFetchMessagesError,
     isLoading: isFetchMessagesLoading,
     error: fetchMessagesError,
     isFetching: isMessagesFetching,
-  } = useFetchMessagesQuery({ chatId: selectedChat?._id, token: user.token });
+  } = useFetchMessagesQuery({ chatId: selectedChat?._id, user });
 
   const [
     sendNewMessage,
@@ -52,6 +54,7 @@ const UserChatBox = () => {
       isError: isSendNewMessageError,
       isLoading: isSendNewMessageLoading,
       error: sendNewMessageError,
+      isSuccess: isSendNewMessageSuccess,
     },
   ] = useSendNewMessageMutation();
 
@@ -79,10 +82,11 @@ const UserChatBox = () => {
     });
   };
 
-  // hook for setup the state with recent messages
+  // initialize the socket connection on component mount
   useEffect(() => {
-    if (fetchMessagesData) setMessagesList([...fetchMessagesData]);
-  }, [JSON.stringify(fetchMessagesData)]);
+    socket = io(ENDPOINT);
+    socket.emit("setup", user);
+  }, []);
 
   // hook for handling sending new messages error
   useEffect(() => {
@@ -97,7 +101,13 @@ const UserChatBox = () => {
       });
   }, [isSendNewMessageError]);
 
-  if (!selectedChat) return <ChatBoxBanner />;
+  // sockeet to emit send message
+  useEffect(() => {
+    if (isSendNewMessageSuccess) {
+      socket.emit("join chat", selectedChat._id);
+      socket.emit("new message", newMessageData);
+    }
+  }, [isSendNewMessageSuccess]);
 
   return (
     <Flex direction="column" w="100%" h="100%">
@@ -105,28 +115,33 @@ const UserChatBox = () => {
       <ChatBoxHeader />
       {/* ---------- Messages Section ----------- */}
       <Stack direction="column" flex="1" overflowY="auto" px="10" py="3">
-        {isFetchMessagesLoading && (
+        {isFetchMessagesLoading || isMessagesFetching ? (
           <Flex height="100%" alignItems="center" justifyContent="center">
             <Spinner size="lg" color="green.600" />
           </Flex>
+        ) : (
+          messagesList.map((msg) => (
+            <Flex
+              key={msg._id}
+              direction="column"
+              alignSelf={
+                isUserSender(msg.sender, user) ? "flex-start" : "flex-end"
+              }
+            >
+              <Tag
+                borderRadius="full"
+                size="lg"
+                colorScheme={isUserSender(msg.sender, user) ? "gray" : "green"}
+                px="4"
+              >
+                {msg.content}
+              </Tag>
+              <Text fontSize="xs" color="gray.500" align="right">
+                {dayjs(msg.createdAt).format("DD/MM HH:mm")}
+              </Text>
+            </Flex>
+          ))
         )}
-        //TODO: need to work on alignment of messages based on sender
-        {messagesList.map((msg) => (
-          <Flex
-            key={msg._id}
-            direction="column"
-            alignSelf={
-              isUserSender(msg.sender, user) ? "flex-start" : "flex-end"
-            }
-          >
-            <Tag borderRadius="full" size="lg" colorScheme="green" px="4">
-              {msg.content}
-            </Tag>
-            <Text fontSize="xs" color="gray.500" align="right">
-              {dayjs(msg.createdAt).format("DD/MM HH:mm")}
-            </Text>
-          </Flex>
-        ))}
       </Stack>
       {/* --------- New Message Input Section ----------- */}
       <HStack spacing="2" bgColor="gray.50" px="4" py="2">

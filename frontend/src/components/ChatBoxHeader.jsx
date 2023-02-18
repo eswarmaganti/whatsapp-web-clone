@@ -14,9 +14,13 @@ const ChatBoxHeader = () => {
   const chatName = selectedChat.isGroupChat
     ? selectedChat.chatName
     : senderData.name;
+
+  const profileImage = !selectedChat.isGroupChat ? senderData.image : null;
+
   return (
     <Flex px="4" py="2" bgColor="gray.50" w="100%" alignItems="center" gap="4">
-      <Avatar name={chatName} src="" />
+      <Avatar src={profileImage} />
+
       <Flex direction="column" flex="1">
         <Text fontSize="md" fontWeight="500" flex="1">
           {chatName}

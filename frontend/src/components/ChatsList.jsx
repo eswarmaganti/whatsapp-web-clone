@@ -25,6 +25,7 @@ const ChatItem = ({ chat, onClick, selectedChat, ...rest }) => {
   const senderData = getCurrentSender(chat.users, user);
 
   const chatName = chat.isGroupChat ? chat.chatName : senderData.name;
+  const profileImage = chat.isGroupChat ? "" : senderData.image;
 
   const latestMessage =
     chat?.latestMessage?.content.length > 35
@@ -44,7 +45,7 @@ const ChatItem = ({ chat, onClick, selectedChat, ...rest }) => {
         className="chat-item"
       >
         {/* ------ Avatar to display user profile image ----- */}
-        <Avatar name={chatName} src={""} mr="4" />
+        <Avatar src={profileImage} mr="4" />
 
         {/* ------- Chat Content Section ----- */}
         <Flex flex="1" justifyContent="space-between" align="baseline">

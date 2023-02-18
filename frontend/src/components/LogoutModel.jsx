@@ -1,14 +1,14 @@
-import React from "react";
+import React, { useRef } from "react";
 import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalBody,
+  AlertDialog,
+  AlertDialogOverlay,
+  AlertDialogContent,
+  AlertDialogBody,
   Text,
-  ModalFooter,
+  AlertDialogFooter,
   Button,
-  ModalHeader,
-  ModalCloseButton,
+  AlertDialogHeader,
+  AlertDialogCloseButton,
 } from "@chakra-ui/react";
 import { useDispatch } from "react-redux";
 import { MdLogout as LogoutIcon } from "react-icons/md";
@@ -16,6 +16,7 @@ import { useNavigate } from "react-router-dom";
 
 import { setUserInfo } from "../app/slice/userSlice";
 const LogoutModel = ({ isOpen, onClose }) => {
+  const cancelBtnRef = useRef();
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -25,16 +26,22 @@ const LogoutModel = ({ isOpen, onClose }) => {
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
-      <ModalOverlay />
-      <ModalContent>
-        <ModalHeader>Logout ?</ModalHeader>
-        <ModalCloseButton />
-        <ModalBody>
+    <AlertDialog
+      isOpen={isOpen}
+      onClose={onClose}
+      motionPreset="slideInBottom"
+      isCentered
+      leastDestructiveRef={cancelBtnRef}
+    >
+      <AlertDialogOverlay />
+      <AlertDialogContent>
+        <AlertDialogHeader>Logout ?</AlertDialogHeader>
+        <AlertDialogCloseButton />
+        <AlertDialogBody>
           <Text>Are you reallu want to logout?</Text>
-        </ModalBody>
-        <ModalFooter>
-          <Button variant="outline" mr={3} onClick={onClose}>
+        </AlertDialogBody>
+        <AlertDialogFooter>
+          <Button variant="outline" ref={cancelBtnRef} mr={3} onClick={onClose}>
             Cancel
           </Button>
           <Button
@@ -44,9 +51,9 @@ const LogoutModel = ({ isOpen, onClose }) => {
           >
             Logout
           </Button>
-        </ModalFooter>
-      </ModalContent>
-    </Modal>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 };
 
